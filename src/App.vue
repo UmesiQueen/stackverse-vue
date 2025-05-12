@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ShoppingCartIcon, MagnifyingGlassIcon, ArrowPathRoundedSquareIcon } from "@heroicons/vue/24/solid";
+import CourseCard from "./components/CourseCard.vue";
 </script>
 
 <template>
@@ -78,7 +79,19 @@ import { ShoppingCartIcon, MagnifyingGlassIcon, ArrowPathRoundedSquareIcon } fro
 						Clear filters
 					</button>
 				</div>
-
+				<div class=" grid grid-cols-1 md:grid-cols-3 gap-7 w-full">
+					<CourseCard />
+					<CourseCard />
+					<CourseCard />
+					<CourseCard />
+					<CourseCard />
+					<CourseCard />
+					<CourseCard />
+					<CourseCard />
+					<CourseCard />
+					<CourseCard />
+					<CourseCard />
+				</div>
 			</div>
 		</div>
 	</main>
