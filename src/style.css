@@ -1,1 +1,6 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+
+@theme {
+	--font-space-grotesk: "Space Grotesk", sans-serif;
+	--font-kaushan: "Kaushan Script", cursive;
+}
