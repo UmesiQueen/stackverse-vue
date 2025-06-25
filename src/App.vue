@@ -3,6 +3,15 @@ import { ref } from "vue";
 import { ShoppingCartIcon, MagnifyingGlassIcon, ArrowPathRoundedSquareIcon, XMarkIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import CourseCard from "./components/CourseCard.vue";
 import courses from "./data.json";
+import Sheet from "./components/Sheet.vue";
+
+const isSheetOpen = ref(false);
+function openSheet() {
+	isSheetOpen.value = true;
+}
+function closeSheet() {
+	isSheetOpen.value = false;
+}
 </script>
 
 <template>
@@ -10,7 +19,8 @@ import courses from "./data.json";
 		<h1 class="font-kaushan text-4xl font-semibold cursor-default text-shadow-lg">Online Course Shop</h1>
 		<div class="flex items-center gap-3 font-space-grotesk">
 			<p class="text-lg cursor-default">$0.0</p>
-			<button class="relative rounded-full p-2 hover:bg-white/20 transition duration-200 cursor-pointer peer">
+			<button @click="openSheet"
+				class="relative rounded-full p-2 hover:bg-white/20 transition duration-200 cursor-pointer peer">
 				<ShoppingCartIcon class="size-7" />
 				<p
 					class="absolute top-1 text-xs right-0 font-bold text-cyan-700 bg-white rounded-full w-4 outline-1 outline-cyan-70 data-[disabled=true]:outline-gray-400 ">
@@ -90,7 +100,11 @@ import courses from "./data.json";
 			</div>
 		</div>
 	</main>
-
+	<Transition enter-active-class="transition-transform duration-300" enter-from-class="translate-x-full"
+		enter-to-class="translate-x-0" leave-active-class="transition-transform duration-300"
+		leave-from-class="translate-x-0" leave-to-class="translate-x-full">
+		<Sheet v-if="isSheetOpen" @close="closeSheet" />
+	</Transition>
 </template>
 
 <style scoped></style>
