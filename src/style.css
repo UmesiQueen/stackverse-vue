@@ -1,6 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-	--font-space-grotesk: "Space Grotesk", sans-serif;
-	--font-kaushan: "Kaushan Script", cursive;
+  --font-space-grotesk: "Space Grotesk", sans-serif;
+  --font-lilita: "WDXL Lubrifont SC", sans-serif;
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
