@@ -18,18 +18,19 @@ function closeSheet() {
 <template>
 	<header class="flex justify-between items-center bg-cyan-900 text-white p-6 sticky top-0 w-full z-10">
 		<h1 class="font-lilita text-4xl font-semibold cursor-default text-shadow-lg">StackVerse</h1>
-		<div class="flex items-center gap-3 font-space-grotesk">
-			<p class="text-lg cursor-default">${{cartItems.reduce((sum, item) => sum + (courses.find(c => c.id === item.id)?.price || 0) * item.count, 0).toFixed(2)}}</p>
-			<button @click="openSheet"
-				class="relative rounded-full p-2 hover:bg-white/20 transition duration-200 cursor-pointer peer">
+		<div class="flex items-center gap-3 font-space-grotesk group">
+			<p class="text-lg cursor-default">${{cartItems.reduce((sum, item) => sum + (courses.find(c => c.id ===
+				item.id)?.price || 0) * item.count, 0).toFixed(2)}}</p>
+			<button @click="openSheet" :disabled="cartItems.length < 1" aria-label="Open shopping cart"
+				class="relative rounded-full p-2 hover:bg-white/20 disabled:hover:bg-transparent transition duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50  peer">
 				<ShoppingCartIcon class="size-7" />
 				<p
-					class="absolute top-1 text-xs right-0 font-bold text-cyan-700 bg-white rounded-full w-4 outline-1 outline-cyan-70 data-[disabled=true]:outline-gray-400 ">
+					class="absolute top-1 text-xs right-0 font-bold text-cyan-900 bg-white [.peer:disabled_&]:opacity-50 rounded-full w-4 outline-1 outline-cyan-900">
 					{{ cartItems.length }}
 				</p>
 			</button>
 			<span role="tooltip"
-				class="text-white bg-gray-950/80 p-1 px-3 text-xs rounded-full hidden peer-hover:block absolute bottom-2 right-12">
+				class="text-white bg-gray-950/80 p-1 px-3 text-xs rounded-full hidden group-has-[.peer:hover:not(:disabled)]:block absolute bottom-2 right-12">
 				View cart
 			</span>
 		</div>
