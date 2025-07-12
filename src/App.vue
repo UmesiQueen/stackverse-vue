@@ -13,11 +13,14 @@ function closeSheet() {
 	isSheetOpen.value = false;
 }
 
-// Search filtering
+// Filter state
 const search = ref("");
 const debouncedSearch = ref("");
+const filterType = ref("");
+const locationFilter = ref("");
+const sortOrder = ref("ascending");
 const showSuggestions = ref(false);
-let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
+let debounceTimeout = null;
 
 // Debounce search
 watch(search, (val) => {
@@ -28,6 +31,8 @@ watch(search, (val) => {
 	}, 300);
 });
 
+// Get unique locations for filter
+const locations = computed(() => Array.from(new Set(courses.map(c => c.location))));
 
 const suggestions = computed(() => {
 	if (!debouncedSearch.value.trim()) return [];
@@ -37,17 +42,39 @@ const suggestions = computed(() => {
 
 const filteredCourses = computed(() => {
 	let arr = [...courses];
-	// Search by name
-	if (debouncedSearch.value.trim()) {
+	// On load, show original order
+	if (!filterType.value && !debouncedSearch.value.trim() && !locationFilter.value) {
+		return arr;
+	}
+	// Subject: filter by name, sort alphabetically
+	if (filterType.value === "subject") {
+		arr = arr.filter(c => c.name.toLowerCase().includes(debouncedSearch.value.trim().toLowerCase()));
+		arr = arr.sort((a, b) => sortOrder.value === "ascending" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
+	}
+	// Price: sort by price
+	else if (filterType.value === "price") {
+		arr = arr.sort((a, b) => sortOrder.value === "ascending" ? a.price - b.price : b.price - a.price);
+	}
+	// Location: filter by location
+	else if (filterType.value === "location" && locationFilter.value) {
+		arr = arr.filter(c => c.location === locationFilter.value);
+	}
+	// Availability: sort by inStock
+	else if (filterType.value === "available") {
+		arr = arr.sort((a, b) => sortOrder.value === "ascending" ? a.inStock - b.inStock : b.inStock - a.inStock);
+	}
+	// If search is used outside subject filter, filter by name but keep original order
+	else if (debouncedSearch.value.trim()) {
 		arr = arr.filter(c => c.name.toLowerCase().includes(debouncedSearch.value.trim().toLowerCase()));
 	}
 	return arr;
 });
 
-function selectSuggestion(name: string) {
+function selectSuggestion(name) {
 	search.value = name;
 	debouncedSearch.value = name;
 	showSuggestions.value = false;
+	filterType.value = "subject";
 }
 </script>
 
@@ -102,19 +129,25 @@ function selectSuggestion(name: string) {
 						<h2 class="text-xl font-semibold">Filters</h2>
 						<ul class="*:flex *:gap-2 *:w-fit">
 							<li class="hover:text-cyan-500 transition duration-200 *:accent-cyan-700">
-								<input type="radio" id="subject" name="filter" value="subject" />
+								<input type="radio" id="subject" name="filter" value="subject" v-model="filterType" />
 								<label for="subject">Subject</label>
 							</li>
-							<li class="hover:text-cyan-500 transition duration-200 *:accent-cyan-700">
-								<input type="radio" id="location" name="filter" value="location" />
+							<li class="hover:text-cyan-500 transition duration-200 *:accent-cyan-700 contents !w-full">
+								<input type="radio" id="location" name="filter" value="location" v-model="filterType" />
 								<label for="location">Location</label>
+								<select v-if="filterType === 'location'" v-model="locationFilter"
+									class="hover:text-black text-right ml-6 text-sm">
+									<option value="">All</option>
+									<option v-for="loc in locations" :key="loc" :value="loc">{{ loc }}</option>
+								</select>
 							</li>
 							<li class="hover:text-cyan-500 transition duration-200 *:accent-cyan-700">
-								<input type="radio" id="price" name="filter" value="price" />
+								<input type="radio" id="price" name="filter" value="price" v-model="filterType" />
 								<label for="price">Price</label>
 							</li>
 							<li class="hover:text-cyan-500 transition duration-200 *:accent-cyan-700">
-								<input type="radio" id="available" name="filter" value="available" />
+								<input type="radio" id="available" name="filter" value="available"
+									v-model="filterType" />
 								<label for="available">Availability</label>
 							</li>
 						</ul>
@@ -122,18 +155,21 @@ function selectSuggestion(name: string) {
 							<h3 class="text-md font-medium mb-2"> Sort by </h3>
 							<ul class="*:flex *:gap-2 w-fit pl-4">
 								<li class="hover:text-cyan-500 transition duration-200 *:accent-cyan-700">
-									<input type="radio" id="ascending" name="sort" value="ascending" checked />
+									<input type="radio" id="ascending" name="sort" value="ascending"
+										v-model="sortOrder" />
 									<label for="ascending">Ascending</label>
 								</li>
 								<li class="hover:text-cyan-500 transition duration-200 *:accent-cyan-700">
-									<input type="radio" id="descending" name="sort" value="descending" />
+									<input type="radio" id="descending" name="sort" value="descending"
+										v-model="sortOrder" />
 									<label for="descending">Descending</label>
 								</li>
 							</ul>
 						</div>
 						<button
-							class="bg-cyan-600 text-white px-4 py-2 rounded-md w-[calc(100%-3.5rem)] cursor-pointer hover:bg-cyan-600/70 transition duration-200">
-							Apply
+							class="bg-cyan-600 text-white px-4 py-2 rounded-md w-[calc(100%-3.5rem)] cursor-pointer hover:bg-cyan-600/70 transition duration-200"
+							@click="filterType = ''; locationFilter = ''; search = ''">
+							Clear Filters
 						</button>
 					</div>
 				</div>
