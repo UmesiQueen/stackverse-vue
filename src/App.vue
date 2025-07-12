@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed, watch } from "vue";
 import { ShoppingCartIcon, MagnifyingGlassIcon, ArrowPathRoundedSquareIcon, XMarkIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import CourseCard from "./components/CourseCard.vue";
 import Sheet from "./components/Sheet.vue";
-import courses from "./data.json";
-import { cartItems } from "./store";
+import { cartItems, courses } from "./store";
 
 const isSheetOpen = ref(false);
 function openSheet() {
@@ -12,6 +11,43 @@ function openSheet() {
 }
 function closeSheet() {
 	isSheetOpen.value = false;
+}
+
+// Search filtering
+const search = ref("");
+const debouncedSearch = ref("");
+const showSuggestions = ref(false);
+let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
+
+// Debounce search
+watch(search, (val) => {
+	if (debounceTimeout) clearTimeout(debounceTimeout);
+	debounceTimeout = setTimeout(() => {
+		debouncedSearch.value = val;
+		showSuggestions.value = !!val.trim();
+	}, 300);
+});
+
+
+const suggestions = computed(() => {
+	if (!debouncedSearch.value.trim()) return [];
+	const term = debouncedSearch.value.trim().toLowerCase();
+	return courses.filter(c => c.name.toLowerCase().includes(term)).slice(0, 5);
+});
+
+const filteredCourses = computed(() => {
+	let arr = [...courses];
+	// Search by name
+	if (debouncedSearch.value.trim()) {
+		arr = arr.filter(c => c.name.toLowerCase().includes(debouncedSearch.value.trim().toLowerCase()));
+	}
+	return arr;
+});
+
+function selectSuggestion(name: string) {
+	search.value = name;
+	debouncedSearch.value = name;
+	showSuggestions.value = false;
 }
 </script>
 
@@ -46,13 +82,21 @@ function closeSheet() {
 			:class="[isSheetOpen ? 'pointer-events-none select-none blur-sm' : '', 'bg-cyan-50/30 font-space-grotesk transition-all duration-300']">
 			<div class="flex w-full p-20 gap-10 divide-x divide-gray-300">
 				<div class="basis-1/4 ">
-					<div class="flex items-center gap-1 h-10 mb-10 w-[calc(100%-3.5rem)]">
-						<input type="text" placeholder="Search for courses"
-							class=" p-2 border border-gray-300 rounded-l-md h-full w-full" />
+					<div class="flex items-center gap-[2px] h-10 mb-10 w-[calc(100%-3.5rem)] relative">
+						<input type="text" v-model="search" placeholder="Search for courses"
+							class="p-2 border border-gray-300 rounded-l-md h-full w-full"
+							@focus="showSuggestions = !!search.trim()" @blur="showSuggestions = false" />
 						<button
 							class="bg-cyan-600 rounded-r-md h-full w-12 inline-flex items-center justify-center hover:bg-cyan-600/70  cursor-pointer transition duration-200">
 							<MagnifyingGlassIcon class="size-5 text-white" />
 						</button>
+						<ul v-if="showSuggestions && suggestions.length"
+							class="absolute left-0 top-full mt-1 w-full bg-white border border-gray-200 rounded shadow z-30">
+							<li v-for="s in suggestions" :key="s.id" @mousedown.prevent="selectSuggestion(s.name)"
+								class="px-4 py-2 hover:bg-cyan-100 cursor-pointer text-gray-900">
+								{{ s.name }}
+							</li>
+						</ul>
 					</div>
 					<div class="flex flex-col gap-5">
 						<h2 class="text-xl font-semibold">Filters</h2>
@@ -96,14 +140,11 @@ function closeSheet() {
 				<div class="basis-3/4 px-4">
 					<div class="flex items-end justify-between mb-10">
 						<h2 class="text-2xl font-semibold">All Courses</h2>
-						<button
-							class="text-base hover:underline hover:text-cyan-500 transition duration-200 cursor-pointer">
-							Clear filters
-						</button>
+						<p class="text-sm"> {{ filteredCourses.length }} result(s)</p>
 					</div>
 					<div
 						class="grid grid-cols-1 md:grid-cols-3 gap-5 w-full overflow-y-auto max-h-[calc(100vh-112px)] p-1 pb-5 ">
-						<CourseCard v-for="(course) in courses" :key="course.id" :id="course.id"
+						<CourseCard v-for="(course) in filteredCourses" :key="course.id" :id="course.id"
 							:imageUrl="course.imageUrl" :title="course.name" :location="course.location"
 							:price="course.price" :slots="course.inStock" :description="course.description" />
 					</div>
