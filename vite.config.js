@@ -12,6 +12,9 @@ export default defineConfig({
         secure: true,
       }
     }
+  },
+  base: '/stackverse-vue/',
+  build: {
+    outDir: 'dist'
   }
-
 })
