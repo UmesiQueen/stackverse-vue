@@ -3,7 +3,7 @@ import { ref, computed, watch } from "vue";
 import { MagnifyingGlassIcon } from "@heroicons/vue/24/solid";
 import CourseCard from "../components/CourseCard.vue";
 import Sheet from "../components/Sheet.vue";
-import { courses, isSheetOpen, toggleSheet } from "../store";
+import { courses, isSheetOpen, toggleSheet, isLoading } from "../store";
 
 // Filter state
 const search = ref("");
@@ -156,11 +156,41 @@ function selectSuggestion(name) {
                 <div class="basis-3/4 px-4">
                     <div class="flex items-end justify-between mb-10">
                         <h2 class="font-lilita text-2xl font-semibold">All Courses</h2>
-                        <p class="text-sm"> {{ filteredCourses.length }} result(s)</p>
+                        <p class="text-sm"> {{ isLoading ? '...' : filteredCourses.length }} result(s)</p>
                     </div>
                     <div
                         class="grid grid-cols-1 md:grid-cols-3 gap-5 w-full overflow-y-auto max-h-[calc(100vh-112px)] p-1 pb-5 ">
-                        <CourseCard v-for="(course) in filteredCourses" :key="course.id" :id="course.id"
+
+                        <!-- Skeleton Loader -->
+                        <div v-if="isLoading" v-for="n in 3" :key="'skeleton-' + n"
+                            class="bg-white rounded-lg shadow-md p-6 animate-pulse">
+                            <!-- Image skeleton -->
+                            <div class="w-full h-48 bg-gray-300 rounded-md mb-4"></div>
+
+                            <!-- Title skeleton -->
+                            <div class="h-6 bg-gray-300 rounded-md mb-3"></div>
+
+                            <!-- Location skeleton -->
+                            <div class="h-4 bg-gray-300 rounded-md mb-3 w-3/4"></div>
+
+                            <!-- Price skeleton -->
+                            <div class="h-5 bg-gray-300 rounded-md mb-3 w-1/2"></div>
+
+                            <!-- Description skeleton -->
+                            <div class="space-y-2 mb-4">
+                                <div class="h-4 bg-gray-300 rounded-md"></div>
+                                <div class="h-4 bg-gray-300 rounded-md w-5/6"></div>
+                            </div>
+
+                            <!-- Slots skeleton -->
+                            <div class="h-4 bg-gray-300 rounded-md mb-4 w-1/3"></div>
+
+                            <!-- Button skeleton -->
+                            <div class="h-10 bg-gray-300 rounded-md w-full"></div>
+                        </div>
+
+                        <!-- Actual Course Cards -->
+                        <CourseCard v-else v-for="(course) in filteredCourses" :key="course.id" :id="course.id"
                             :imageUrl="course.imageUrl" :title="course.topic" :location="course.location"
                             :price="course.price" :slots="course.space" :description="course.description" />
                     </div>

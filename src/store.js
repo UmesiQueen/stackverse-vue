@@ -1,18 +1,16 @@
 import { reactive, ref } from 'vue';
 
-export const cartItems = reactive([]);
-export const courses = reactive([]);
-export const isLoading = ref(false);
-export const error = ref(null);
+ const cartItems = reactive([]);
+ const courses = reactive([]);
+ const isLoading = ref(false);
 
-export const isSheetOpen = ref(false);
-export function toggleSheet() {
+ const isSheetOpen = ref(false);
+ function toggleSheet() {
   isSheetOpen.value = !isSheetOpen.value;
 }
 
-export const fetchCourses = async () => {
+const fetchCourses = async () => {
   isLoading.value = true;
-  error.value = null;
 
   try {
     const response = await fetch('/api/lessons');
@@ -30,7 +28,6 @@ export const fetchCourses = async () => {
     });
 
   } catch (err) {
-    error.value = err.message;
     console.error('Error fetching courses:', err);
   } finally {
     isLoading.value = false;
@@ -39,3 +36,5 @@ export const fetchCourses = async () => {
 
 // Auto-fetch courses when store is imported
 fetchCourses();
+
+ export { cartItems , courses, isLoading, isSheetOpen, toggleSheet, fetchCourses };
