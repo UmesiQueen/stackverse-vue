@@ -107,7 +107,10 @@ nextTick(syncPrevCounts);
       <div class="flex items-center justify-between p-6">
         <button
           class="bg-cyan-600 text-white px-4 py-2 rounded-md w-full cursor-pointer hover:bg-cyan-600/70 transition duration-200"
-          @click="$router.push('/cart')">
+          @click="() => {
+            $router.push('/cart');
+            emit('close');
+          }">
           Checkout
         </button>
         <button

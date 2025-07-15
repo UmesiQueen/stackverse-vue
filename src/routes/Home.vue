@@ -88,7 +88,7 @@ function selectSuggestion(name) {
         <main
             :class="[isSheetOpen ? 'pointer-events-none select-none blur-sm' : '', 'bg-cyan-50/30 font-space-grotesk transition-all duration-300']">
             <div class="flex w-full p-20 gap-10 divide-x divide-gray-300">
-                <div class="basis-1/4 ">
+                <div class="basis-1/4">
                     <div class="flex items-center gap-[2px] h-10 mb-10 w-[calc(100%-3.5rem)] relative">
                         <input type="text" v-model="search" placeholder="Search for courses"
                             class="p-2 border border-gray-300 rounded-l-md h-full w-full"
@@ -159,7 +159,7 @@ function selectSuggestion(name) {
                         <p class="text-sm"> {{ isLoading ? '...' : filteredCourses.length }} result(s)</p>
                     </div>
                     <div
-                        class="grid grid-cols-1 md:grid-cols-3 gap-5 w-full overflow-y-auto max-h-[calc(100vh-112px)] p-1 pb-5 ">
+                        class="grid grid-cols-1 md:grid-cols-3 gap-5 w-full  p-1 pb-5 ">
 
                         <!-- Skeleton Loader -->
                         <div v-if="isLoading" v-for="n in 3" :key="'skeleton-' + n"

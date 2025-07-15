@@ -1,6 +1,11 @@
 <script setup>
-import { ShoppingCartIcon } from "@heroicons/vue/24/solid";
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+import { ShoppingCartIcon, BackspaceIcon } from "@heroicons/vue/24/solid";
 import { cartItems, courses, toggleSheet } from "./store";
+
+const route = useRoute();
+const isCartPage = computed(() => route.path === '/cart')
 </script>
 
 <template>
@@ -11,7 +16,12 @@ import { cartItems, courses, toggleSheet } from "./store";
 		<div class="flex items-center gap-3 font-space-grotesk group">
 			<p class="text-lg cursor-default">${{cartItems.reduce((sum, item) => sum + (courses.find(c => c.id ===
 				item.id)?.price || 0) * item.count, 0).toFixed(2)}}</p>
-			<button @click="toggleSheet" :disabled="cartItems.length < 1" aria-label="Open shopping cart"
+			<button v-if="isCartPage"
+				class="inline-flex items-center gap-1 bg-white rounded-md text-gray-500 text-sm px-2 py-1 transition duration-200 cursor-pointer hover:bg-white/80"
+				@click="$router.push('/')">
+				<BackspaceIcon class="size-5 text-inherit" />Home
+			</button>
+			<button v-else @click="toggleSheet" :disabled="cartItems.length < 1" aria-label="Open shopping cart"
 				class="relative rounded-full p-2 hover:bg-white/20 disabled:hover:bg-transparent transition duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50  peer">
 				<ShoppingCartIcon class="size-7" />
 				<p
