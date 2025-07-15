@@ -1,34 +1,34 @@
-<script setup lang="ts">
+<script setup>
 import { TrashIcon, ArrowUturnLeftIcon } from "@heroicons/vue/24/solid";
 import { ref, computed } from "vue";
-import { cartItems, courses, type CartItem, type Course } from "../store.ts";
+import { cartItems, courses } from "../store.js";
 
 // --- Cart logic (unchanged) ---
-function getCourse(id: string): Course | undefined {
-    return courses.find((c: Course) => c.id === id);
+function getCourse(id) {
+    return courses.find((c) => c.id === id);
 }
 
-const prevCounts = ref<Record<string, number>>({});
+const prevCounts = ref({});
 
-function removeItem(id: string) {
-    const idx = cartItems.findIndex((item: CartItem) => item.id === id);
+function removeItem(id) {
+    const idx = cartItems.findIndex((item) => item.id === id);
     if (idx !== -1) {
         const item = cartItems[idx];
         const course = getCourse(id);
-        if (course && typeof course.inStock === "number") course.inStock += item.count;
+        if (course) course.inStock += item.count;
         cartItems.splice(idx, 1);
         delete prevCounts.value[id];
     }
 }
 
-function getMaxCount(item: CartItem): number {
+function getMaxCount(item) {
     const course = getCourse(item.id);
-    return course && typeof course.inStock === "number" ? course.inStock + item.count : 1;
+    return course ? course.inStock + item.count : 1;
 }
 
-function onCountInput(item: CartItem) {
+function onCountInput(item) {
     const course = getCourse(item.id);
-    if (!course || typeof course.inStock !== "number") return;
+    if (!course) return;
     const prev = prevCounts.value[item.id] ?? item.count;
     let newCount = item.count;
     if (newCount < 1) newCount = 1;
@@ -48,7 +48,7 @@ const nameValid = computed(() => /^[A-Za-z\s]+$/.test(name.value.trim()));
 const phoneValid = computed(() => /^[0-9]+$/.test(phone.value.trim()));
 const formValid = computed(() => nameValid.value && phoneValid.value);
 
-function submitOrder(e: Event) {
+function submitOrder(e) {
     e.preventDefault();
     if (formValid.value) {
         cartItems.splice(0, cartItems.length);

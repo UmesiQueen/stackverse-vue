@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import { ShoppingCartIcon } from "@heroicons/vue/24/solid";
 import { cartItems, courses, toggleSheet } from "./store";
 </script>

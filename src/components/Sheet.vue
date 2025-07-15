@@ -1,19 +1,18 @@
-<script setup lang="ts">
+<script setup>
 import { XMarkIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import { defineEmits, ref, nextTick } from "vue";
-import { cartItems, courses, type Course, type CartItem } from "../store.ts";
+import { cartItems, courses } from "../store";
 
 const emit = defineEmits(["close"]);
 
-// Use correct types for prevCounts
-const prevCounts = ref<Record<string, number>>({});
+const prevCounts = ref({});
 
-function getCourse(id: string): Course | undefined {
-  return courses.find((c: Course) => c.id === id);
+function getCourse(id) {
+  return courses.find(c => c.id === id);
 }
 
-function removeItem(id: string) {
-  const idx = cartItems.findIndex((item: CartItem) => item.id === id);
+function removeItem(id) {
+  const idx = cartItems.findIndex(item => item.id === id);
   if (idx !== -1) {
     const item = cartItems[idx];
     const course = getCourse(id);
@@ -24,7 +23,7 @@ function removeItem(id: string) {
 }
 
 function clearCart() {
-  cartItems.forEach((item: CartItem) => {
+  cartItems.forEach(item => {
     const course = getCourse(item.id);
     if (course && typeof course.inStock === "number") course.inStock += item.count;
   });
@@ -32,12 +31,12 @@ function clearCart() {
   prevCounts.value = {};
 }
 
-function getMaxCount(item: CartItem) {
+function getMaxCount(item) {
   const course = getCourse(item.id);
   return course && typeof course.inStock === "number" ? course.inStock + item.count : 1;
 }
 
-function onCountInput(item: CartItem) {
+function onCountInput(item) {
   const course = getCourse(item.id);
   if (!course || typeof course.inStock !== "number") return;
   const prev = prevCounts.value[item.id] ?? item.count;
@@ -54,14 +53,14 @@ function onCountInput(item: CartItem) {
 
 // Initialize prevCounts when cartItems change
 function syncPrevCounts() {
-  cartItems.forEach((item: CartItem) => {
+  cartItems.forEach(item => {
     if (!(item.id in prevCounts.value)) {
       prevCounts.value[item.id] = item.count;
     }
   });
   // Remove stale keys
   Object.keys(prevCounts.value).forEach(id => {
-    if (!cartItems.find((item: CartItem) => item.id === id)) {
+    if (!cartItems.find(item => item.id === id)) {
       delete prevCounts.value[id];
     }
   });

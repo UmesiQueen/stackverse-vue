@@ -1,9 +1,9 @@
-<script setup lang="ts">
+<script setup>
 import { ref, computed, watch } from "vue";
 import { MagnifyingGlassIcon } from "@heroicons/vue/24/solid";
 import CourseCard from "../components/CourseCard.vue";
 import Sheet from "../components/Sheet.vue";
-import { courses, isSheetOpen, toggleSheet, type Course } from "../store";
+import { courses, isSheetOpen, toggleSheet } from "../store";
 
 // Filter state
 const search = ref("");
@@ -12,7 +12,7 @@ const filterType = ref("");
 const locationFilter = ref("");
 const sortOrder = ref("ascending");
 const showSuggestions = ref(false);
-let debounceTimeout: number | null = null;
+let debounceTimeout = null;
 
 // Debounce search
 watch(search, (val) => {
@@ -24,15 +24,15 @@ watch(search, (val) => {
 });
 
 // Get unique locations for filter
-const locations = computed<string[]>(() => Array.from(new Set(courses.map((c: Course) => c.location))));
+const locations = computed(() => Array.from(new Set(courses.map(c => c.location))));
 
-const suggestions = computed<Course[]>(() => {
+const suggestions = computed(() => {
     if (!debouncedSearch.value.trim()) return [];
     const term = debouncedSearch.value.trim().toLowerCase();
-    return courses.filter((c: Course) => c.name.toLowerCase().includes(term)).slice(0, 5);
+    return courses.filter(c => c.name.toLowerCase().includes(term)).slice(0, 5);
 });
 
-const filteredCourses = computed<Course[]>(() => {
+const filteredCourses = computed(() => {
     let arr = [...courses];
     // On load, show original order
     if (!filterType.value && !debouncedSearch.value.trim() && !locationFilter.value) {
@@ -40,8 +40,8 @@ const filteredCourses = computed<Course[]>(() => {
     }
     // Subject: filter by name, sort alphabetically
     if (filterType.value === "subject") {
-        arr = arr.filter((c: Course) => c.name.toLowerCase().includes(debouncedSearch.value.trim().toLowerCase()));
-        arr = arr.sort((a: Course, b: Course) =>
+        arr = arr.filter(c => c.name.toLowerCase().includes(debouncedSearch.value.trim().toLowerCase()));
+        arr = arr.sort((a, b) =>
             sortOrder.value === "ascending"
                 ? a.name.localeCompare(b.name)
                 : b.name.localeCompare(a.name)
@@ -49,28 +49,28 @@ const filteredCourses = computed<Course[]>(() => {
     }
     // Price: sort by price
     else if (filterType.value === "price") {
-        arr = arr.sort((a: Course, b: Course) =>
+        arr = arr.sort((a, b) =>
             sortOrder.value === "ascending" ? a.price - b.price : b.price - a.price
         );
     }
     // Location: filter by location
     else if (filterType.value === "location" && locationFilter.value) {
-        arr = arr.filter((c: Course) => c.location === locationFilter.value);
+        arr = arr.filter(c => c.location === locationFilter.value);
     }
     // Availability: sort by inStock
     else if (filterType.value === "available") {
-        arr = arr.sort((a: Course, b: Course) =>
+        arr = arr.sort((a, b) =>
             sortOrder.value === "ascending" ? a.inStock - b.inStock : b.inStock - a.inStock
         );
     }
     // If search is used outside subject filter, filter by name but keep original order
     else if (debouncedSearch.value.trim()) {
-        arr = arr.filter((c: Course) => c.name.toLowerCase().includes(debouncedSearch.value.trim().toLowerCase()));
+        arr = arr.filter(c => c.name.toLowerCase().includes(debouncedSearch.value.trim().toLowerCase()));
     }
     return arr;
 });
 
-function selectSuggestion(name: string) {
+function selectSuggestion(name) {
     search.value = name;
     debouncedSearch.value = name;
     showSuggestions.value = false;

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import { ShoppingBagIcon, MapPinIcon, CheckBadgeIcon } from "@heroicons/vue/24/solid";
 import { defineProps, ref, computed } from "vue";
 import { cartItems, courses } from '../store';
@@ -15,12 +15,12 @@ const props = defineProps({
 
 const showToast = ref(false);
 const toastMsg = ref("");
-let toastTimeout: ReturnType<typeof setTimeout> | null = null;
+let toastTimeout = null;
 
 const course = computed(() => courses.find(c => c.id === props.id));
-const inStock = computed(() => course.value?.inStock ?? 0);
+const inStock = computed(() => course.value && course.value.inStock !== undefined ? course.value.inStock : 0);
 
-function triggerToast(msg: string) {
+function triggerToast(msg) {
     toastMsg.value = msg;
     showToast.value = true;
     if (toastTimeout) clearTimeout(toastTimeout);
