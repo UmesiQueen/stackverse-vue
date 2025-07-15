@@ -29,7 +29,7 @@ const locations = computed(() => Array.from(new Set(courses.map(c => c.location)
 const suggestions = computed(() => {
     if (!debouncedSearch.value.trim()) return [];
     const term = debouncedSearch.value.trim().toLowerCase();
-    return courses.filter(c => c.name.toLowerCase().includes(term)).slice(0, 5);
+    return courses.filter(c => c.topic.toLowerCase().includes(term)).slice(0, 5);
 });
 
 const filteredCourses = computed(() => {
@@ -40,11 +40,11 @@ const filteredCourses = computed(() => {
     }
     // Subject: filter by name, sort alphabetically
     if (filterType.value === "subject") {
-        arr = arr.filter(c => c.name.toLowerCase().includes(debouncedSearch.value.trim().toLowerCase()));
+        arr = arr.filter(c => c.topic.toLowerCase().includes(debouncedSearch.value.trim().toLowerCase()));
         arr = arr.sort((a, b) =>
             sortOrder.value === "ascending"
-                ? a.name.localeCompare(b.name)
-                : b.name.localeCompare(a.name)
+                ? a.topic.localeCompare(b.topic)
+                : b.topic.localeCompare(a.topic)
         );
     }
     // Price: sort by price
@@ -57,15 +57,15 @@ const filteredCourses = computed(() => {
     else if (filterType.value === "location" && locationFilter.value) {
         arr = arr.filter(c => c.location === locationFilter.value);
     }
-    // Availability: sort by inStock
+    // Availability: sort by space
     else if (filterType.value === "available") {
         arr = arr.sort((a, b) =>
-            sortOrder.value === "ascending" ? a.inStock - b.inStock : b.inStock - a.inStock
+            sortOrder.value === "ascending" ? a.space - b.space : b.space - a.space
         );
     }
     // If search is used outside subject filter, filter by name but keep original order
     else if (debouncedSearch.value.trim()) {
-        arr = arr.filter(c => c.name.toLowerCase().includes(debouncedSearch.value.trim().toLowerCase()));
+        arr = arr.filter(c => c.topic.toLowerCase().includes(debouncedSearch.value.trim().toLowerCase()));
     }
     return arr;
 });
@@ -161,8 +161,8 @@ function selectSuggestion(name) {
                     <div
                         class="grid grid-cols-1 md:grid-cols-3 gap-5 w-full overflow-y-auto max-h-[calc(100vh-112px)] p-1 pb-5 ">
                         <CourseCard v-for="(course) in filteredCourses" :key="course.id" :id="course.id"
-                            :imageUrl="course.imageUrl" :title="course.name" :location="course.location"
-                            :price="course.price" :slots="course.inStock" :description="course.description" />
+                            :imageUrl="course.imageUrl" :title="course.topic" :location="course.location"
+                            :price="course.price" :slots="course.space" :description="course.description" />
                     </div>
                 </div>
             </div>

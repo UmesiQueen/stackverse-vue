@@ -15,7 +15,7 @@ function removeItem(id) {
     if (idx !== -1) {
         const item = cartItems[idx];
         const course = getCourse(id);
-        if (course) course.inStock += item.count;
+        if (course) course.space += item.count;
         cartItems.splice(idx, 1);
         delete prevCounts.value[id];
     }
@@ -23,7 +23,7 @@ function removeItem(id) {
 
 function getMaxCount(item) {
     const course = getCourse(item.id);
-    return course ? course.inStock + item.count : 1;
+    return course ? course.space + item.count : 1;
 }
 
 function onCountInput(item) {
@@ -32,9 +32,9 @@ function onCountInput(item) {
     const prev = prevCounts.value[item.id] ?? item.count;
     let newCount = item.count;
     if (newCount < 1) newCount = 1;
-    if (newCount > course.inStock + prev) newCount = course.inStock + prev;
+    if (newCount > course.space + prev) newCount = course.space + prev;
     const diff = newCount - prev;
-    course.inStock -= diff;
+    course.space -= diff;
     item.count = newCount;
     prevCounts.value[item.id] = newCount;
 }
@@ -83,7 +83,7 @@ function submitOrder(e) {
                         <div class="border-1 border-black w-20 aspect-square bg-top-left bg-cover"
                             :style="{ backgroundImage: `url(${(getCourse(item.id)?.imageUrl) || ''})` }" />
                         <div class="flex flex-col justify-between h-full gap-1">
-                            <h3 class="font-medium">{{ getCourse(item.id)?.name || 'Course title' }}</h3>
+                            <h3 class="font-medium">{{ getCourse(item.id)?.topic || 'Course title' }}</h3>
                             <p class="text-lg font-semibold text-cyan-600">${{ getCourse(item.id)?.price || 0 }}</p>
                             <input type="number" min="1" :max="getMaxCount(item)" v-model.number="item.count"
                                 @input="onCountInput(item)"

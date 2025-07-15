@@ -16,7 +16,7 @@ function removeItem(id) {
   if (idx !== -1) {
     const item = cartItems[idx];
     const course = getCourse(id);
-    if (course && typeof course.inStock === "number") course.inStock += item.count;
+    if (course && typeof course.space === "number") course.space += item.count;
     cartItems.splice(idx, 1);
     delete prevCounts.value[id];
   }
@@ -25,7 +25,7 @@ function removeItem(id) {
 function clearCart() {
   cartItems.forEach(item => {
     const course = getCourse(item.id);
-    if (course && typeof course.inStock === "number") course.inStock += item.count;
+    if (course && typeof course.space === "number") course.space += item.count;
   });
   cartItems.splice(0, cartItems.length);
   prevCounts.value = {};
@@ -33,20 +33,20 @@ function clearCart() {
 
 function getMaxCount(item) {
   const course = getCourse(item.id);
-  return course && typeof course.inStock === "number" ? course.inStock + item.count : 1;
+  return course && typeof course.space === "number" ? course.space + item.count : 1;
 }
 
 function onCountInput(item) {
   const course = getCourse(item.id);
-  if (!course || typeof course.inStock !== "number") return;
+  if (!course || typeof course.space !== "number") return;
   const prev = prevCounts.value[item.id] ?? item.count;
   let newCount = item.count;
   // Clamp
   if (newCount < 1) newCount = 1;
-  if (newCount > course.inStock + prev) newCount = course.inStock + prev;
-  // Update inStock
+  if (newCount > course.space + prev) newCount = course.space + prev;
+  // Update space
   const diff = newCount - prev;
-  course.inStock -= diff;
+  course.space -= diff;
   item.count = newCount;
   prevCounts.value[item.id] = newCount;
 }
@@ -83,7 +83,7 @@ nextTick(syncPrevCounts);
           <div class="border-1 border-black w-20 aspect-square bg-top-left bg-cover"
             :style="{ backgroundImage: `url(${(getCourse(item.id)?.imageUrl) || ''})` }" />
           <div class="flex flex-col justify-between h-full gap-1">
-            <h3 class="font-medium">{{ getCourse(item.id)?.name || 'Course title' }}</h3>
+            <h3 class="font-medium">{{ getCourse(item.id)?.topic || 'Course title' }}</h3>
             <p class="text-lg font-semibold text-cyan-600">${{ getCourse(item.id)?.price || 0 }}</p>
             <input type="number" min="1" :max="getMaxCount(item)" v-model.number="item.count"
               @input="onCountInput(item)" class="border border-gray-300 rounded-md w-16 p-1 text-center" />

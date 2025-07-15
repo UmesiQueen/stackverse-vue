@@ -18,7 +18,7 @@ const toastMsg = ref("");
 let toastTimeout = null;
 
 const course = computed(() => courses.find(c => c.id === props.id));
-const inStock = computed(() => course.value && course.value.inStock !== undefined ? course.value.inStock : 0);
+const space = computed(() => course.value && course.value.space !== undefined ? course.value.space : 0);
 
 function triggerToast(msg) {
     toastMsg.value = msg;
@@ -30,14 +30,14 @@ function triggerToast(msg) {
 }
 
 function addToCart() {
-    if (inStock.value < 1) return;
+    if (space.value < 1) return;
     const idx = cartItems.findIndex(item => item.id === props.id);
     if (idx !== -1) {
         cartItems[idx].count += 1;
     } else {
         cartItems.push({ id: props.id, count: 1 });
     }
-    if (course.value) course.value.inStock -= 1;
+    if (course.value) course.value.space -= 1;
     triggerToast(`Added '${props.title}' to cart`);
 }
 </script>
@@ -56,13 +56,13 @@ function addToCart() {
             <div class="w-full h-52 relative group border-b border-gray-100">
                 <img :src="imageUrl" alt="Course Image"
                     class="w-full h-full object-cover object-left-top group-hover:scale-105 transition-transform duration-200" />
-                <button @click="addToCart" :aria-label="`Add ${title} to cart`" :disabled="inStock < 1"
+                <button @click="addToCart" :aria-label="`Add ${title} to cart`" :disabled="space < 1"
                     class="bg-white/80 rounded-full p-2 absolute right-2 top-2 hover:bg-white transition-all duration-200 cursor-pointer peer hidden group-hover:block drop-shadow-xl/50 disabled:opacity-50 disabled:cursor-not-allowed">
                     <ShoppingBagIcon class="size-6 text-gray-950/80" />
                 </button>
                 <p role="tooltip"
                     class="text-white bg-gray-950/80 p-1 px-2 text-xs rounded-full hidden peer-hover:block  absolute top-7 right-10 transition-all duration-200 ease-in-out delay-75 drop-shadow-lg">
-                    <span v-if="inStock > 0">Add to Cart</span>
+                    <span v-if="space > 0">Add to Cart</span>
                     <span v-else>Out of Stock</span>
                 </p>
             </div>
@@ -72,12 +72,12 @@ function addToCart() {
                     <MapPinIcon class="size-4" /> {{ location }}
                 </p>
                 <p>{{ description }}</p>
-                <p><span class="font-semibold">Available slots:</span> {{ inStock }}</p>
+                <p><span class="font-semibold">Available slots:</span> {{ space }}</p>
                 <div class="flex items-end justify-between mt-auto">
                     <p class="text-xl font-semibold"> ${{ price }}</p>
-                    <button @click="addToCart" :aria-label="`Add ${title} to cart`" :disabled="inStock < 1"
+                    <button @click="addToCart" :aria-label="`Add ${title} to cart`" :disabled="space < 1"
                         class="bg-cyan-900 w-fit text-white text-sm p-2 rounded-md cursor-pointer hover:bg-cyan-900/70 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                        <span v-if="inStock > 0">Add to Cart</span>
+                        <span v-if="space > 0">Add to Cart</span>
                         <span v-else>Out of Stock</span>
                     </button>
                 </div>
