@@ -63,7 +63,7 @@ const filteredCourses = computed(() => {
             sortOrder.value === "ascending" ? a.space - b.space : b.space - a.space
         );
     }
-    // If search is used outside subject filter, filter by name but keep original order
+
     else if (debouncedSearch.value.trim()) {
         arr = arr.filter(c => c.topic.toLowerCase().includes(debouncedSearch.value.trim().toLowerCase()));
     }
@@ -99,9 +99,9 @@ function selectSuggestion(name) {
                         </button>
                         <ul v-if="showSuggestions && suggestions.length"
                             class="absolute left-0 top-full mt-1 w-full bg-white border border-gray-200 rounded shadow z-30">
-                            <li v-for="s in suggestions" :key="s.id" @mousedown.prevent="selectSuggestion(s.name)"
+                            <li v-for="s in suggestions" :key="s.id" @mousedown.prevent="selectSuggestion(s.topic)"
                                 class="px-4 py-2 hover:bg-cyan-100 cursor-pointer text-gray-900">
-                                {{ s.name }}
+                                {{ s.topic }}
                             </li>
                         </ul>
                     </div>

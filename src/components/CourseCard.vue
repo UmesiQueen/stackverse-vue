@@ -66,24 +66,24 @@ function addToCart() {
                     <span v-else>Out of Stock</span>
                 </p>
             </div>
-            <div class="p-4 h-72 flex flex-col gap-2">
+            <div class="p-4 grid grid-rows-[auto_auto_1fr_auto_auto] gap-2">
                 <h2 class="font-bold text-lg">{{ title }}</h2>
                 <p class="text-sm text-cyan-500 inline-flex items-center gap-1">
                     <MapPinIcon class="size-4" /> {{ location }}
                 </p>
-                <p>{{ description }}</p>
-                <p><span class="font-semibold">Available slots:</span> {{ space }}</p>
-                <div class="flex items-end justify-between mt-auto">
-                    <p class="text-xl font-semibold"> ${{ price }}</p>
-                    <button @click="addToCart" :aria-label="`Add ${title} to cart`" :disabled="space < 1"
-                        class="bg-cyan-900 w-fit text-white text-sm p-2 rounded-md cursor-pointer hover:bg-cyan-900/70 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                        <span v-if="space > 0">Add to Cart</span>
-                        <span v-else>Out of Stock</span>
-                    </button>
+                <p class="text-sm">{{ description }}</p>
+                <p class="text-sm"><span class="font-semibold">Available slots:</span> {{ space }}</p>
+                <div class="flex items-end justify-between mt-3">
+                            <p class="text-xl font-semibold"> ${{ price }}</p>
+                            <button @click="addToCart" :aria-label="`Add ${title} to cart`" :disabled="space < 1"
+                                class="bg-cyan-900 w-fit text-white text-sm p-2 rounded-md cursor-pointer hover:bg-cyan-900/70 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span v-if="space > 0">Add to Cart</span>
+                                <span v-else>Out of Stock</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 </template>
 
 <style scoped>

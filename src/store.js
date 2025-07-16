@@ -24,7 +24,7 @@ const fetchCourses = async () => {
     // Clear existing courses and add new ones
     courses.splice(0, courses.length);
     data.forEach(course => {
-      courses.push({ ...course });
+      courses.push({ ...course,imageUrl: `https://stackverse-server.onrender.com${course.imageUrl}` });
     });
 
   } catch (err) {

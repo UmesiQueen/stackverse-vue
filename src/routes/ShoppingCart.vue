@@ -81,34 +81,34 @@ async function submitOrder(e) {
             const result = await response.json()
             console.log('Order created:', result)
 
-            // Make the update availability request after successful order creation
+            // Make the lesson update request after successful order creation
             try {
-                const updateResponse = await fetch('/api/orders/update-availability', {
+                const updateResponse = await fetch('/api/lessons/update', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        action: 'reduce-spaces',
                         orderId: result.orderId,
                         cartItems: result.order.cartItems
                     })
                 })
 
                 if (!updateResponse.ok) {
-                    throw new Error(`Update availability failed! status: ${updateResponse.status}`)
+                    throw new Error(`Lesson update failed! status: ${updateResponse.status}`)
                 }
 
                 const updateResult = await updateResponse.json()
-                console.log('Availability updated:', updateResult)
+                console.log('Lesson spaces updated:', updateResult)
 
                 resetForm(); // Clear form and cart only after both requests succeed
 
             } catch (updateErr) {
-                console.error('Error updating availability:', updateErr)
-                alert('Order created successfully, but there was an issue updating availability. Please contact support.')
+                console.error('Error updating lesson spaces:', updateErr)
+                alert('Order created successfully, but there was an issue updating lesson spaces. Please contact support.')
             }
-    
-            resetForm(); // Clear form and cart
+
         } catch (err) {
             console.error('Error:', err)
             alert('Failed to submit order. Please try again.');

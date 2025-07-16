@@ -11,7 +11,7 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHistory('/stackverse-vue/'),
+    history: createWebHashHistory('/stackverse-vue/'),
     routes,
 });
 
