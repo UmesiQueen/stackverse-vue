@@ -3,6 +3,11 @@ A simple Vue.js frontend application for a lesson store that interacts with the 
 
 2024-25 CST3144 Full Stack Development
 
+## Tools
+[Vue](https://vuejs.org/) - Built using vue Composition API
+
+[TailwindCSS](https://tailwindcss.com/) - Styling framework
+
 ## Project Structure
 
 ```
@@ -33,8 +38,9 @@ stackverse-vue/
 
 ### Core Functionality
 - View available lessons
-- Add lessons to cart
-- Submit orders
+- Add and remove lessons from cart
+- Search, filter and sort lessons
+- Checkout
 
 ### Key Components
 - Lessons Display: Shows all available lessons with search/filter capabilities
