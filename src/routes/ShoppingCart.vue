@@ -51,6 +51,7 @@ const formValid = computed(() => nameValid.value && phoneValid.value);
 const disableCheckoutBtn = computed(() =>
     !formValid.value || cartItems.length < 1 || isLoading.value
 );
+const apiBaseUrl = "https://stackverse-server.onrender.com";
 
 async function submitOrder(e) {
     e.preventDefault();
@@ -66,7 +67,7 @@ async function submitOrder(e) {
 
     if (formValid.value) {
         try {
-            const response = await fetch('/api/orders', {
+            const response = await fetch(`${apiBaseUrl}/api/orders`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -83,7 +84,7 @@ async function submitOrder(e) {
 
             // Make the lesson update request after successful order creation
             try {
-                const updateResponse = await fetch('/api/lessons/update', {
+                const updateResponse = await fetch(`${apiBaseUrl}/api/lessons/update`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

@@ -8,12 +8,13 @@ import { reactive, ref } from 'vue';
  function toggleSheet() {
   isSheetOpen.value = !isSheetOpen.value;
 }
+const apiBaseUrl = "https://stackverse-server.onrender.com";
 
 const fetchCourses = async () => {
   isLoading.value = true;
 
   try {
-    const response = await fetch('/api/lessons');
+    const response = await fetch(`${apiBaseUrl}/api/lessons`);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -24,7 +25,7 @@ const fetchCourses = async () => {
     // Clear existing courses and add new ones
     courses.splice(0, courses.length);
     data.forEach(course => {
-      courses.push({ ...course,imageUrl: `https://stackverse-server.onrender.com${course.imageUrl}` });
+      courses.push({ ...course, imageUrl: `${apiBaseUrl}${course.imageUrl}` });
     });
 
   } catch (err) {

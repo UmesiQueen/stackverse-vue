@@ -13,7 +13,7 @@ export default defineConfig({
       }
     }
   },
-  base: '/',
+  base: '/stackverse-vue/',
   build: {
     outDir: 'dist'
   }

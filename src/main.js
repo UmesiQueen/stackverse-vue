@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import './style.css'
 import App from './App.vue'
 import Home from './routes/Home.vue';
@@ -11,7 +11,7 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory('/stackverse-vue/'),
     routes,
 });
 
