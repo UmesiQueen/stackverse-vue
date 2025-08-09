@@ -3,6 +3,7 @@ import { useRoute } from 'vue-router'
 import { computed } from 'vue'
 import { ShoppingCartIcon, BackspaceIcon } from "@heroicons/vue/24/solid";
 import { cartItems, courses, toggleSheet } from "./store";
+import NoMobileView from './components/NoMobileView.vue';
 
 const route = useRoute();
 const isCartPage = computed(() => route.path === '/cart')
@@ -36,4 +37,5 @@ const isCartPage = computed(() => route.path === '/cart')
 		</div>
 	</header>
 	<router-view />
+	<NoMobileView />
 </template>
